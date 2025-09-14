@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Big Island Hawaii Top 50 Attractions Interactive Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #map {
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    // Initialize map centered on Big Island Hawaii
+    const map = L.map('map').setView([19.7, -155.6], 9);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // JSON dataset for top 50 attractions
+    const data = {
+      "TopAttractions": [
+        {
+          "name": "Hawaiʻi Volcanoes National Park",
+          "latitude": 19.4308,
+          "longitude": -155.2277,
+          "description": "Active volcanoes, lava tubes, and hiking. Entry $30/vehicle. Check for eruptions. Practice mālama on trails."
+        },
+        {
+          "name": "Mauna Kea Summit",
+          "latitude": 19.8207,
+          "longitude": -155.4680,
+          "description": "Stargazing and sunset views. 4WD or guided tour required. Respect summit guidelines."
+        },
+        {
+          "name": "ʻAkaka Falls State Park",
+          "latitude": 19.8542,
+          "longitude": -155.1225,
+          "description": "442-ft waterfall loop trail. Entry $5/vehicle. Easy access from Hilo."
+        },
+        {
+          "name": "Waipiʻo Valley",
+          "latitude": 20.1175,
+          "longitude": -155.6011,
+          "description": "Black sand beach, waterfalls. 4WD or hike. Guided tours available."
+        },
+        {
+          "name": "Hapuna Beach State Recreation Area",
+          "latitude": 20.0033,
+          "longitude": -155.8244,
+          "description": "White sand beach for swimming. Parking $5. Lifeguards present."
+        },
+        {
+          "name": "Punaluʻu Black Sand Beach",
+          "latitude": 19.1350,
+          "longitude": -155.5047,
+          "description": "Sea turtle viewing. Free parking. No swimming due to currents."
+        },
+        {
+          "name": "Papakōlea Green Sand Beach",
+          "latitude": 18.9361,
+          "longitude": -155.6467,
+          "description": "Olivine green sand. 5-mile hike or shuttle. Moderate difficulty."
+        },
+        {
+          "name": "Captain Cook Monument",
+          "latitude": 19.4814,
+          "longitude": -155.9333,
+          "description": "Snorkeling at Kealakekua Bay. Kayak or boat tour from Keauhou."
+        },
+        {
+          "name": "Pololū Valley",
+          "latitude": 20.1983,
+          "longitude": -155.7328,
+          "description": "Black sand beach hike. Steep 1-mile trail. Coastal views."
+        },
+        {
+          "name": "Puʻuhonua o Hōnaunau National Historical Park",
+          "latitude": 19.4225,
+          "longitude": -155.9183,
+          "description": "Ancient Hawaiian refuge. Entry $20/vehicle. Cultural tours."
+        },
+        {
+          "name": "Kona Coffee Living History Farm",
+          "latitude": 19.5125,
+          "longitude": -155.9183,
+          "description": "Coffee tours and history. $20 admission. Book ahead."
+        },
+        {
+          "name": "Kahaluu Beach Park",
+          "latitude": 19.5767,
+          "longitude": -155.9625,
+          "description": "Snorkeling with turtles. Free parking. Lifeguards."
+        },
+        {
+          "name": "Huliheʻe Palace",
+          "latitude": 19.6417,
+          "longitude": -155.9992,
+          "description": "Royal residence tours. $10 entry. Historic artifacts."
+        },
+        {
+          "name": "Rainbow Falls",
+          "latitude": 19.7300,
+          "longitude": -155.1083,
+          "description": "Wailuku River waterfall. Free, short walk. Respect barriers."
+        },
+        {
+          "name": "Hilo Farmers Market",
+          "latitude": 19.7250,
+          "longitude": -155.0900,
+          "description": "Local produce, Wednesdays/Sundays. Free entry. Support vendors."
+        },
+        {
+          "name": "Banyan Drive",
+          "latitude": 19.7233,
+          "longitude": -155.0700,
+          "description": "Historic tree-lined street. Free walk/drive. Preserve trees."
+        },
+        {
+          "name": "Hilo Tropical Bioreserve & Gardens",
+          "latitude": 19.8083,
+          "longitude": -155.1358,
+          "description": "2,000+ plant species. $25 entry. Self-guided tours."
+        },
+        {
+          "name": "South Point (Ka Lae)",
+          "latitude": 18.9100,
+          "longitude": -155.6800,
+          "description": "Southernmost U.S. point. Scenic cliffs. Windy, no facilities."
+        },
+        {
+          "name": "Whittington Beach Park",
+          "latitude": 19.0472,
+          "longitude": -155.5892,
+          "description": "Quiet black sand beach. Free, limited parking. Clean up."
+        },
+        {
+          "name": "Kaʻū Coffee Mill",
+          "latitude": 19.1150,
+          "longitude": -155.5950,
+          "description": "Coffee tasting/tours. $10 entry. Local agriculture."
+        },
+        {
+          "name": "Honokaʻa Town",
+          "latitude": 20.0775,
+          "longitude": -155.4683,
+          "description": "Historic shops/cafes. Free, walkable. Support locals."
+        },
+        {
+          "name": "Laupāhoehoe Point Beach Park",
+          "latitude": 19.9817,
+          "longitude": -155.2333,
+          "description": "Rocky coast picnic. Free, no swimming. Hwy 19 access."
+        },
+        {
+          "name": "Hakalau Forest National Wildlife Refuge",
+          "latitude": 19.7800,
+          "longitude": -155.2000,
+          "description": "Rare birds, guided tours. Free, permit required."
+        },
+        {
+          "name": "Kolekole Beach Park",
+          "latitude": 19.9200,
+          "longitude": -155.1833,
+          "description": "Black sand beach. Free, camping. Clean up for mālama."
+        },
+        {
+          "name": "Kilauea Iki Trail",
+          "latitude": 19.4167,
+          "longitude": -155.2500,
+          "description": "3.5-mile lava loop. $30/vehicle entry. Moderate hike."
+        },
+        {
+          "name": "Devastation Trail",
+          "latitude": 19.4083,
+          "longitude": -155.2333,
+          "description": "1-mile paved Kilauea view. Wheelchair accessible."
+        },
+        {
+          "name": "Puna Coast Trail",
+          "latitude": 19.3400,
+          "longitude": -154.9600,
+          "description": "Lava fields coastal hike. Moderate, varies length."
+        },
+        {
+          "name": "Kaloko-Honokohau Shore Trails",
+          "latitude": 19.6733,
+          "longitude": -156.0267,
+          "description": "Petroglyphs and history. Free, easy trails."
+        },
+        {
+          "name": "Kekaha Kai State Park Trails",
+          "latitude": 19.7900,
+          "longitude": -156.0367,
+          "description": "Beaches like Manini'owali. 4WD road, moderate."
+        },
+        {
+          "name": "Mauna Kea Beach (Kaunaʻoa Beach)",
+          "latitude": 20.0150,
+          "longitude": -155.8250,
+          "description": "White sand, calm waters. Resort access, limited parking."
+        },
+        {
+          "name": "Puukohola Heiau National Historic Site",
+          "latitude": 20.0167,
+          "longitude": -155.8200,
+          "description": "Historic temple. Free entry, guided tours."
+        },
+        {
+          "name": "Hawaii Tropical Botanical Garden",
+          "latitude": 19.9750,
+          "longitude": -155.1000,
+          "description": "2,000+ plants. $20 entry, guided tours."
+        },
+        {
+          "name": "Anaehoomalu Beach (A-Bay)",
+          "latitude": 19.9183,
+          "longitude": -155.8667,
+          "description": "Calm waters, historical sites. Free parking."
+        },
+        {
+          "name": "Kealakekua Bay State Historical Park",
+          "latitude": 19.4717,
+          "longitude": -155.9233,
+          "description": "Snorkeling, historical site. Kayak access."
+        },
+        {
+          "name": "Place of Refuge",
+          "latitude": 19.4225,
+          "longitude": -155.9183,
+          "description": "Cultural sanctuary. $20/vehicle entry."
+        },
+        {
+          "name": "Holualoa Village",
+          "latitude": 19.6000,
+          "longitude": -155.9500,
+          "description": "Art galleries, coffee shops. Free, walkable."
+        },
+        {
+          "name": "Waimea Town",
+          "latitude": 20.0210,
+          "longitude": -155.6680,
+          "description": "Historic cowboy town. Free, local markets."
+        },
+        {
+          "name": "Honomalino Beach",
+          "latitude": 19.2000,
+          "longitude": -155.8500,
+          "description": "Secluded black sand. 4WD access, quiet."
+        },
+        {
+          "name": "Kiholo Bay",
+          "latitude": 19.8500,
+          "longitude": -155.9000,
+          "description": "Wildlife and snorkeling. 4WD or hike."
+        },
+        {
+          "name": "Kohala Mountain Road",
+          "latitude": 20.0500,
+          "longitude": -155.7000,
+          "description": "Scenic drive with views. 4WD recommended."
+        },
+        {
+          "name": "Lapakahi State Historical Park",
+          "latitude": 20.1167,
+          "longitude": -155.7500,
+          "description": "Ancient fishing village. Free, self-guided."
+        },
+        {
+          "name": "Moʻokini Heiau",
+          "latitude": 20.2667,
+          "longitude": -155.8500,
+          "description": "Sacred temple site. Free, cultural respect."
+        },
+        {
+          "name": "Honokaa People’s Theatre",
+          "latitude": 20.0775,
+          "longitude": -155.4683,
+          "description": "Historic cinema. Free shows, check schedule."
+        },
+        {
+          "name": "Hamakua Heritage Corridor",
+          "latitude": 19.9842,
+          "longitude": -155.1792,
+          "description": "Scenic drive with stops. Free, self-guided."
+        },
+        {
+          "name": "Umauma Falls",
+          "latitude": 19.9500,
+          "longitude": -155.1500,
+          "description": "Waterfall zip-line tours. $150/adult. Book ahead."
+        },
+        {
+          "name": "Pepeekeo Scenic Drive",
+          "latitude": 19.8500,
+          "longitude": -155.1000,
+          "description": "Rainforest views. Free, drive or hike."
+        },
+        {
+          "name": "Onomea Bay Trail",
+          "latitude": 19.8000,
+          "longitude": -155.1000,
+          "description": "Coastal hike to bay. Moderate, free."
+        },
+        {
+          "name": "Honomu Town",
+          "latitude": 19.8667,
+          "longitude": -155.1167,
+          "description": "Quaint shops, art. Free, walkable."
+        },
+        {
+          "name": "Puʻu ʻŌʻō Vent",
+          "latitude": 19.4000,
+          "longitude": -155.1000,
+          "description": "Volcanic vent view. Guided tours, check safety."
+        },
+        {
+          "name": "Isaac Hale Beach Park",
+          "latitude": 19.4500,
+          "longitude": -154.9000,
+          "description": "Surfing spot. Free parking, rough waters."
+        }
+      ]
+    };
+
+    // Layer group for attractions
+    const attractionsLayer = L.layerGroup();
+
+    // Custom dark red marker icon
+    const darkRedIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+
+    // Add attractions with dark red markers
+    data.TopAttractions.forEach(attraction => {
+      L.marker([attraction.latitude, attraction.longitude], {
+        icon: darkRedIcon
+      }).addTo(attractionsLayer).bindPopup(`<b>${attraction.name}</b><br>${attraction.description}`);
+    });
+
+    // Add layer to map
+    attractionsLayer.addTo(map);
+
+    // Add layer control
+    L.control.layers({}, { 'Top 50 Attractions': attractionsLayer }).addTo(map);
+  </script>
+</body>
+</html>
